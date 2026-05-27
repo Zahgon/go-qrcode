@@ -2,8 +2,6 @@ package standard
 
 import (
 	"image"
-	"image/jpeg"
-	"image/png"
 	"io"
 )
 
@@ -25,11 +23,13 @@ type ImageEncoder interface {
 type jpegEncoder struct{}
 
 func (j jpegEncoder) Encode(w io.Writer, img image.Image) error {
-	return jpeg.Encode(w, img, nil)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 type pngEncoder struct{}
 
 func (j pngEncoder) Encode(w io.Writer, img image.Image) error {
-	return png.Encode(w, img)
+	_ = "STUB: not implemented"
+	return nil
 }

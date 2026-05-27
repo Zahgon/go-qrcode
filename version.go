@@ -2,12 +2,9 @@ package qrcode
 
 import (
 	"errors"
-	"log"
-	"strconv"
 	"sync"
 
 	// "github.com/skip2/go-qrcode/bitset"
-	"unicode/utf8"
 
 	"github.com/yeqown/reedsolomon/binary"
 )
@@ -132,72 +129,31 @@ type version struct {
 }
 
 // Dimension ...
-func (v version) Dimension() int {
-	return v.Ver*4 + 17
-}
+func (v version) Dimension() int { _ = "STUB: not implemented"; return 0 }
 
 // NumTotalCodewords total data codewords
-func (v version) NumTotalCodewords() int {
-	var total int
-	for _, g := range v.Groups {
-		total = total + (g.NumBlocks * g.NumDataCodewords)
-	}
-	return total
-}
+func (v version) NumTotalCodewords() int { _ = "STUB: not implemented"; return 0 }
 
 // NumGroups ... need group num. ref to version config file
-func (v version) NumGroups() int {
-	return len(v.Groups)
-}
+func (v version) NumGroups() int { _ = "STUB: not implemented"; return 0 }
 
 // TotalNumBlocks ... total data blocks num, ref to version config file
-func (v version) TotalNumBlocks() int {
-	var total int
-	for _, g := range v.Groups {
-		total = total + g.NumBlocks
-	}
-	return total
-}
+func (v version) TotalNumBlocks() int { _ = "STUB: not implemented"; return 0 }
 
 // VerInfo version info bitset
-func (v version) verInfo() *binary.Binary {
-	if v.Ver < 7 {
-		return nil
-	}
-
-	result := binary.New()
-	result.AppendUint32(versionBitSequence[v.Ver], verInfoBitsNum)
-
-	return result
-}
+func (v version) verInfo() *binary.Binary { _ = "STUB: not implemented"; return nil }
 
 // formatInfo returns the 15-bit Format Information qrbool for a QR
 // code.
-func (v version) formatInfo(maskPattern int) *binary.Binary {
-	formatID := 0
+func (v version) formatInfo(maskPattern int) *binary.Binary { _ = "STUB: not implemented"; return nil }
 
-	switch v.ECLevel {
-	case ErrorCorrectionLow:
-		formatID = 0x08 // 0b01000
-	case ErrorCorrectionMedium:
-		formatID = 0x00 // 0b00000
-	case ErrorCorrectionQuart:
-		formatID = 0x18 // 0b11000
-	case ErrorCorrectionHighest:
-		formatID = 0x10 // 0b10000
-	default:
-		log.Panicf("Invalid level %d", v.ECLevel)
-	}
+// 0b01000
 
-	if maskPattern < 0 || maskPattern > 7 {
-		log.Panicf("Invalid maskPattern %d", maskPattern)
-	}
+// 0b00000
 
-	formatID |= maskPattern & 0x7
-	result := binary.New()
-	result.AppendUint32(formatBitSequence[formatID].regular, formatInfoBitsNum)
-	return result
-}
+// 0b11000
+
+// 0b10000
 
 var emptyVersion = version{Ver: -1}
 
@@ -206,67 +162,30 @@ var emptyVersion = version{Ver: -1}
 // compare represents the function to compare the target version with the cursor version.
 // negative means lower direction, positive means higher direction, zero mean hit.
 func binarySearchVersion(low, high int, compare func(*version) int) (hit version, found bool) {
+	_ = "STUB: not implemented"
 	// left low and high in a valid range
-	if low > high || low > _VERSIONS_ITEM_COUNT || high < 0 {
-		return emptyVersion, false
-	}
-
-	if low < 0 {
-		low = 0
-	}
-	if high >= _VERSIONS_ITEM_COUNT {
-		high = len(versions) - 1
-	}
-
-	for low <= high {
-		mid := (low + high) / 2
-		r := compare(&versions[mid])
-		if r == 0 {
-			hit = versions[mid]
-			found = true
-			break
-		}
-
-		if r > 0 {
-			// move toward higher direction
-			low = mid + 1
-		} else {
-			// move toward lower direction
-			high = mid
-		}
-	}
-
-	return hit, found
+	return *new(version), false
 }
+
+// move toward higher direction
+
+// move toward lower direction
 
 // defaultBinaryCompare built-in compare function for binary search.
 func defaultBinaryCompare(ver int, ec ecLevel) func(cursor *version) int {
-	return func(cursor *version) int {
-		switch r := ver - cursor.Ver; r {
-		case 0:
-		default:
-			// v is bigger return positive; otherwise return negative.
-			return r
-		}
-
-		return int(ec - cursor.ECLevel)
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// v is bigger return positive; otherwise return negative.
 
 // loadVersion get version config by specified version indicator and error correction level.
 // we can speed up this process, by shrink the range to search.
 func loadVersion(lv int, ec ecLevel) version {
+	_ = "STUB: not implemented"
 	// each version only has 4 items in versions array,
 	// and them are ordered[ASC] already.
-	high := lv*4 - 1
-	low := (lv - 1) * 4
-
-	for i := low; i <= high; i++ {
-		if versions[i].ECLevel == ec {
-			return versions[i]
-		}
-	}
-	panic(errMissMatchedVersion)
+	return *new(version)
 }
 
 // analyzeVersion the raw text, and then decide which version should be chosen
@@ -276,53 +195,12 @@ func loadVersion(lv int, ec ecLevel) version {
 // check out http://muyuchengfeng.xyz/%E4%BA%8C%E7%BB%B4%E7%A0%81-%E5%AD%97%E7%AC%A6%E5%AE%B9%E9%87%8F%E8%A1%A8/
 // for more details.
 func analyzeVersion(raw string, ec ecLevel, mode encMode) (*version, error) {
-	step := 0
-	switch ec {
-	case ErrorCorrectionLow:
-		step = 0
-	case ErrorCorrectionMedium:
-		step = 1
-	case ErrorCorrectionQuart:
-		step = 2
-	case ErrorCorrectionHighest:
-		step = 3
-	default:
-		return nil, errInvalidErrorCorrectionLevel
-	}
-
-	// Byte mode capacity is measured in bytes, not characters
-	// Numeric, Alphanumeric, and Kanji modes are character-based
-	var want int
-	if mode == EncModeByte {
-		want = len(raw)
-	} else {
-		want = utf8.RuneCountInString(raw)
-	}
-
-	mark := 0
-	for ; step < 160; step += 4 {
-
-		switch mode {
-		case EncModeNumeric:
-			mark = versions[step].Cap.Numeric
-		case EncModeAlphanumeric:
-			mark = versions[step].Cap.AlphaNumeric
-		case EncModeByte:
-			mark = versions[step].Cap.Byte
-		case EncModeKanji:
-			mark = versions[step].Cap.JP
-		default:
-			return nil, errMissMatchedEncodeType
-		}
-
-		if mark >= want {
-			return &versions[step], nil
-		}
-	}
-	debugLogf("mismatched version, version's length: %d, ec: %v", len(versions), ec)
-
-	return nil, errAnalyzeVersionFailed
+	_ = "STUB: not implemented"
+	return nil, nil
 }
+
+// Byte mode capacity is measured in bytes, not characters
+// Numeric, Alphanumeric, and Kanji modes are character-based
 
 var (
 	// https://www.thonky.com/qr-code-tutorial/alignment-pattern-locations
@@ -383,104 +261,25 @@ type loc struct {
 
 // loadAlignmentPatternLoc load alignment pattern location by version
 // @Deprecated
-func loadAlignmentPatternLoc(ver int) (locs []loc) {
-	if ver < 2 {
-		return
-	}
+func loadAlignmentPatternLoc(ver int) (locs []loc) { _ = "STUB: not implemented"; return nil }
 
-	alignPatternCacheMu.Lock()
-	defer alignPatternCacheMu.Unlock()
+func loadAlignmentPatternLocV2(ver int) []loc { _ = "STUB: not implemented"; return nil }
 
-	var ok bool
-	if locs, ok = alignPatternCache[ver]; ok {
-		return
-	}
-
-	dimension := ver*4 + 17
-	positions, ok := alignPatternLocation[ver]
-	if !ok {
-		panic("could not found align at version: " + strconv.Itoa(ver))
-	}
-
-	for _, pos1 := range positions {
-		for _, pos2 := range positions {
-			if !valid(pos1, pos2, dimension) {
-				continue
-			}
-			locs = append(locs, loc{X: pos1, Y: pos2})
-		}
-	}
-	alignPatternCache[ver] = locs
-	return
-}
-
-func loadAlignmentPatternLocV2(ver int) []loc {
-	if ver < 2 {
-		return nil
-	}
-
-	if locs, ok := alignPatternCache[ver]; ok {
-		return locs
-	}
-
-	// Just in case, we need to calculate the alignment pattern locations
-	locs := calcAlignPatternLocs(ver)
-	alignPatternCacheMu.Lock()
-	alignPatternCache[ver] = locs
-	alignPatternCacheMu.Unlock()
-
-	return locs
-}
+// Just in case, we need to calculate the alignment pattern locations
 
 // precalculateAlignPatternLocs precalculate all versions' alignment pattern locations which
 // only need to be calculated once.
-func precalculateAlignPatternLocs() {
-	precalculateOnce.Do(func() {
-		for ver := 2; ver <= _VERSION_COUNT; ver++ {
-			alignPatternCache[ver] = calcAlignPatternLocs(ver)
-		}
-	})
-}
+func precalculateAlignPatternLocs() { _ = "STUB: not implemented"; return }
 
-func calcAlignPatternLocs(ver int) (locs []loc) {
-	if ver < 2 {
-		return
-	}
-
-	dimension := ver*4 + 17
-	positions, ok := alignPatternLocation[ver]
-	if !ok {
-		panic("could not found align at version: " + strconv.Itoa(ver))
-	}
-
-	locs = make([]loc, 0, len(positions)*len(positions))
-
-	for _, pos1 := range positions {
-		for _, pos2 := range positions {
-			if !valid(pos1, pos2, dimension) {
-				continue
-			}
-			locs = append(locs, loc{X: pos1, Y: pos2})
-		}
-	}
-
-	return locs
-}
+func calcAlignPatternLocs(ver int) (locs []loc) { _ = "STUB: not implemented"; return nil }
 
 // x, y center position x,y so
 func valid(x, y, dimension int) bool {
+	_ = "STUB: not implemented"
 	// valid left-top
-	if (x-2) < 7 && (y-2) < 7 {
-		return false
-	}
-	// valid right-top
-	if (x+2) > dimension-7 && (y-2) < 7 {
-		return false
-	}
-	// valid left-bottom
-	if (x-2) < 7 && (y+2) > dimension-7 {
-		return false
-	}
-
-	return true
+	return false
 }
+
+// valid right-top
+
+// valid left-bottom

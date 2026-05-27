@@ -5,12 +5,7 @@ type EncodeOption interface {
 }
 
 // DefaultEncodingOption with EncMode = EncModeAuto, EcLevel = ErrorCorrectionQuart
-func DefaultEncodingOption() *encodingOption {
-	return &encodingOption{
-		EncMode: EncModeAuto,
-		EcLevel: ErrorCorrectionQuart,
-	}
-}
+func DefaultEncodingOption() *encodingOption { _ = "STUB: not implemented"; return nil }
 
 type encodingOption struct {
 	// Version of target QR code.
@@ -33,56 +28,32 @@ type fnEncodingOption struct {
 	fn func(*encodingOption)
 }
 
-func (f fnEncodingOption) apply(option *encodingOption) {
-	f.fn(option)
-}
+func (f fnEncodingOption) apply(option *encodingOption) { _ = "STUB: not implemented"; return }
 
 func newFnEncodingOption(fn func(*encodingOption)) fnEncodingOption {
-	return fnEncodingOption{fn: fn}
+	_ = "STUB: not implemented"
+	return *new(fnEncodingOption)
 }
 
 // WithEncodingMode sets the encoding mode.
 func WithEncodingMode(mode encMode) EncodeOption {
-	return newFnEncodingOption(func(option *encodingOption) {
-		if name := getEncModeName(mode); name == "" {
-			return
-		}
-
-		option.EncMode = mode
-	})
+	_ = "STUB: not implemented"
+	return *new(EncodeOption)
 }
 
 // WithErrorCorrectionLevel sets the error correction level.
 func WithErrorCorrectionLevel(ecLevel ecLevel) EncodeOption {
-	return newFnEncodingOption(func(option *encodingOption) {
-		if ecLevel < ErrorCorrectionLow || ecLevel > ErrorCorrectionHighest {
-			return
-		}
-
-		option.EcLevel = ecLevel
-	})
+	_ = "STUB: not implemented"
+	return *new(EncodeOption)
 }
 
 // WithVersion sets the version of target QR code.
-func WithVersion(version int) EncodeOption {
-	return newFnEncodingOption(func(option *encodingOption) {
-		if version < 1 || version > _VERSION_COUNT {
-			return
-		}
-
-		option.Version = version
-	})
-}
+func WithVersion(version int) EncodeOption { _ = "STUB: not implemented"; return *new(EncodeOption) }
 
 // WithMinimumVersion sets the minimum version of target QR code.
 // If the automatically analyzed version is lower than this minimum,
 // the minimum version will be used instead.
 func WithMinimumVersion(version int) EncodeOption {
-	return newFnEncodingOption(func(option *encodingOption) {
-		if version < 1 || version > _VERSION_COUNT {
-			return
-		}
-
-		option.MinimumVersion = version
-	})
+	_ = "STUB: not implemented"
+	return *new(EncodeOption)
 }

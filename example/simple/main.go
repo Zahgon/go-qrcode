@@ -45,4 +45,4 @@ type nopCloser struct {
 	io.Writer
 }
 
-func (nopCloser) Close() error { return nil }
+func (nopCloser) Close() error { _ = "STUB: not implemented"; return nil }

@@ -1,7 +1,6 @@
 package standard
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 
@@ -13,19 +12,15 @@ type ImageOption interface {
 }
 
 // defaultOutputImageOption default output image background color and etc options
-func defaultOutputImageOption() *outputImageOptions {
-	return &outputImageOptions{
-		bgColor:            color_WHITE, // white
-		bgTransparent:      false,       // not transparent
-		qrColor:            color_BLACK, // black
-		logo:               nil,         //
-		logoSizeMultiplier: 5,
-		qrWidth:            20,              //
-		shape:              _shapeRectangle, //
-		imageEncoder:       jpegEncoder{},
-		borderWidths:       [4]int{_defaultPadding, _defaultPadding, _defaultPadding, _defaultPadding},
-	}
-}
+func defaultOutputImageOption() *outputImageOptions { _ = "STUB: not implemented"; return nil }
+
+// white
+// not transparent
+// black
+//
+
+//
+//
 
 // outputImageOptions to output QR code image
 type outputImageOptions struct {
@@ -68,54 +63,23 @@ type outputImageOptions struct {
 }
 
 func (oo *outputImageOptions) backgroundColor() color.RGBA {
-	if oo == nil {
-		return color_WHITE
-	}
-
-	if oo.bgTransparent {
-		(&oo.bgColor).A = 0x00
-	}
-
-	return oo.bgColor
+	_ = "STUB: not implemented"
+	return *new(color.RGBA)
 }
 
 func (oo *outputImageOptions) logoImage() image.Image {
-	if oo == nil || oo.logo == nil {
-		return nil
-	}
-
-	return oo.logo
+	_ = "STUB: not implemented"
+	return *new(image.Image)
 }
 
-func (oo *outputImageOptions) qrBlockWidth() int {
-	if oo == nil || (oo.qrWidth <= 0 || oo.qrWidth > 255) {
-		return 20
-	}
+func (oo *outputImageOptions) qrBlockWidth() int { _ = "STUB: not implemented"; return 0 }
 
-	return oo.qrWidth
-}
-
-func (oo *outputImageOptions) getShape() IShape {
-	if oo == nil || oo.shape == nil {
-		return _shapeRectangle
-	}
-
-	return oo.shape
-}
+func (oo *outputImageOptions) getShape() IShape { _ = "STUB: not implemented"; return *new(IShape) }
 
 // preCalculateAttribute this function must reference to draw function.
 func (oo *outputImageOptions) preCalculateAttribute(dimension int) *Attribute {
-	if oo == nil {
-		return nil
-	}
-
-	top, right, bottom, left := oo.borderWidths[0], oo.borderWidths[1], oo.borderWidths[2], oo.borderWidths[3]
-	return &Attribute{
-		W:          dimension*oo.qrBlockWidth() + right + left,
-		H:          dimension*oo.qrBlockWidth() + top + bottom,
-		Borders:    oo.borderWidths,
-		BlockWidth: oo.qrBlockWidth(),
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 var (
@@ -140,65 +104,17 @@ var (
 // translateToRGBA get color.RGBA by value State, if not found, return outputImageOptions.qrColor.
 // NOTE: this function decides the state should use qrColor or bgColor.
 func (oo *outputImageOptions) translateToRGBA(v qrcode.QRValue) (rgba color.RGBA) {
+	_ = "STUB: not implemented"
 	// TODO(@yeqown): use _STATE_MAPPING to replace this function while in debug mode
 	// or some special flag.
-	if v.IsSet() {
-		rgba = oo.qrColor
-		return rgba
-	}
-
-	if oo.bgTransparent {
-		(&oo.bgColor).A = 0x00
-		// color.RGBA is pre-multiplied by alpha, so set RGB to 0 when fully transparent.
-		(&oo.bgColor).R = 0x00
-		(&oo.bgColor).G = 0x00
-		(&oo.bgColor).B = 0x00
-	}
-	rgba = oo.bgColor
-
-	return rgba
+	return *new(color.RGBA)
 }
+
+// color.RGBA is pre-multiplied by alpha, so set RGB to 0 when fully transparent.
 
 // parseFromHex convert hex string into color.RGBA
-func parseFromHex(s string) color.RGBA {
-	c := color.RGBA{
-		R: 0,
-		G: 0,
-		B: 0,
-		A: 0xff,
-	}
+func parseFromHex(s string) color.RGBA { _ = "STUB: not implemented"; return *new(color.RGBA) }
 
-	var err error
-	switch len(s) {
-	case 7:
-		_, err = fmt.Sscanf(s, "#%02x%02x%02x", &c.R, &c.G, &c.B)
-	case 4:
-		_, err = fmt.Sscanf(s, "#%1x%1x%1x", &c.R, &c.G, &c.B)
-		// Double the hex digits:
-		c.R *= 17
-		c.G *= 17
-		c.B *= 17
-	default:
-		err = fmt.Errorf("invalid length, must be 7 or 4")
-	}
-	if err != nil {
-		panic(err)
-	}
+// Double the hex digits:
 
-	return c
-}
-
-func parseFromColor(c color.Color) color.RGBA {
-	rgba, ok := c.(color.RGBA)
-	if ok {
-		return rgba
-	}
-
-	r, g, b, a := c.RGBA()
-	return color.RGBA{
-		R: uint8(r),
-		G: uint8(g),
-		B: uint8(b),
-		A: uint8(a),
-	}
-}
+func parseFromColor(c color.Color) color.RGBA { _ = "STUB: not implemented"; return *new(color.RGBA) }

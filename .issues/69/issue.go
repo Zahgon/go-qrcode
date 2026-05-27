@@ -11,13 +11,7 @@ import (
 	"image"
 	"image/png"
 	"io"
-	"os"
 	"strings"
-
-	skip2 "github.com/skip2/go-qrcode"
-
-	yeqown "github.com/yeqown/go-qrcode/v2"
-	yeqownwstd "github.com/yeqown/go-qrcode/writer/compressed"
 )
 
 /*
@@ -50,20 +44,13 @@ func main() {
 }
 
 func encodeWithSkip2(content, name string) {
-	//err := skip2.WriteFile(content, skip2.Highest, 0, name)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	q, err := skip2.New(content, skip2.Highest)
-	if err != nil {
-		panic(err)
-	}
-	err = q.WriteFile(0, name)
-	if err != nil {
-		panic(err)
-	}
-	stat, _ := os.Stat(name)
-	fmt.Printf("%s: %v\n", name, stat.Size())
+	_ = "STUB: not implemented"
+	// err := skip2.WriteFile(content, skip2.Highest, 0, name)
+	//
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	return
 }
 
 type CustomPngEncoder struct {
@@ -71,37 +58,14 @@ type CustomPngEncoder struct {
 }
 
 func (j CustomPngEncoder) Encode(w io.Writer, img image.Image) error {
-	pngEncoder := png.Encoder{CompressionLevel: j.CompressionLevel}
-	return pngEncoder.Encode(w, img)
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func encodeWithYeqown(content, name string) {
-	qrc, err := yeqown.NewWith(content,
-		yeqown.WithEncodingMode(yeqown.EncModeAlphanumeric),
-		yeqown.WithErrorCorrectionLevel(yeqown.ErrorCorrectionHighest),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	option := yeqownwstd.Option{
-		Padding:   4,
-		BlockSize: 1,
-	}
-	stdw, err := yeqownwstd.New(name, &option)
-	if err != nil {
-		panic(err)
-	}
-
-	if err := qrc.Save(stdw); err != nil {
-		panic(err)
-	}
-
-	stat, _ := os.Stat(name)
-	fmt.Printf("%s: %v\n", name, stat.Size())
-}
+func encodeWithYeqown(content, name string) { _ = "STUB: not implemented"; return }
 
 func encodeWithYeqownCompression(content, name string, imageEncoder CustomPngEncoder) {
+	_ = "STUB: not implemented"
 	//cfg := yeqown.DefaultConfig()
 	//cfg.EncMode = yeqown.EncModeAlphanumeric
 	////cfg.EncMode = yeqown.EncModeByte
@@ -114,28 +78,5 @@ func encodeWithYeqownCompression(content, name string, imageEncoder CustomPngEnc
 	//if err != nil {
 	//	panic(err)
 	//}
-
-	qrc, err := yeqown.NewWith(content,
-		yeqown.WithEncodingMode(yeqown.EncModeAlphanumeric),
-		yeqown.WithErrorCorrectionLevel(yeqown.ErrorCorrectionHighest),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	option := yeqownwstd.Option{
-		Padding:   4,
-		BlockSize: 1,
-	}
-	stdw, err := yeqownwstd.New(name, &option)
-	if err != nil {
-		panic(err)
-	}
-
-	if err := qrc.Save(stdw); err != nil {
-		panic(err)
-	}
-
-	stat, _ := os.Stat(name)
-	fmt.Printf("%s: %v\n", name, stat.Size())
+	return
 }

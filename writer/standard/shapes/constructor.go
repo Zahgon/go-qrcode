@@ -14,25 +14,21 @@ type ComposableShape struct {
 
 // Draw executes the injected draw function to render the shape body.
 func (s *ComposableShape) Draw(ctx *standard.DrawContext) {
-	s.onDraw(ctx)
+	_ = "STUB: not implemented"
+
+	// DrawFinder executes the injected drawFinder function to render the shape's finder pattern.
+	return
 }
 
-// DrawFinder executes the injected drawFinder function to render the shape's finder pattern.
-func (s *ComposableShape) DrawFinder(ctx *standard.DrawContext) {
-	s.onDrawFinder(ctx)
-}
+func (s *ComposableShape) DrawFinder(ctx *standard.DrawContext) { _ = "STUB: not implemented"; return }
 
 // Assemble creates a new ComposableShape instance by assigning provided drawing
 // functions. This allows dynamic, reusable construction of shape behaviors.
 func Assemble(drawFinder, drawBlock func(ctx *standard.DrawContext)) standard.IShape {
-	return &ComposableShape{
-		onDrawFinder: drawFinder,
-		onDraw:       drawBlock,
-	}
+	_ = "STUB: not implemented"
+	return *new(standard.IShape)
 }
 
 // ----------- helpers -----------
 
-func has(mask, bits uint16) bool {
-	return mask&bits == bits
-}
+func has(mask, bits uint16) bool { _ = "STUB: not implemented"; return false }

@@ -16,10 +16,6 @@ var _ Writer = (*nonWriter)(nil)
 
 type nonWriter struct{}
 
-func (n nonWriter) Close() error {
-	return nil
-}
+func (n nonWriter) Close() error { _ = "STUB: not implemented"; return nil }
 
-func (n nonWriter) Write(mat Matrix) error {
-	return nil
-}
+func (n nonWriter) Write(mat Matrix) error { _ = "STUB: not implemented"; return nil }

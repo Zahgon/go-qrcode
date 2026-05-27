@@ -32,19 +32,23 @@ type DrawContext struct {
 
 // UpperLeft returns the point which indicates the upper left position.
 func (dc *DrawContext) UpperLeft() (dx, dy float64) {
-	return dc.x, dc.y
+	_ = "STUB: not implemented"
+
+	// Edge returns width and height of each shape could take at most.
+	return 0, 0
 }
 
-// Edge returns width and height of each shape could take at most.
 func (dc *DrawContext) Edge() (width, height int) {
-	return dc.w, dc.h
+	_ = "STUB: not implemented"
+
+	// Bit flags for the 8 surrounding cells in a 3x3 grid around the center (x, y).
+	// Layout:
+	// NTopLeft		NTop 	NTopRight
+	// NLeft  		NSelf	NRight
+	// NBotLeft 	NBot 	NBotRight
+	return 0, 0
 }
 
-// Bit flags for the 8 surrounding cells in a 3x3 grid around the center (x, y).
-// Layout:
-// NTopLeft		NTop 	NTopRight
-// NLeft  		NSelf	NRight
-// NBotLeft 	NBot 	NBotRight
 const (
 	NTopLeft  uint16 = 1 << iota // top-left
 	NTop                         // top
@@ -58,50 +62,43 @@ const (
 )
 
 // Neighbours returns a bitmask representing the neighboring blocks of the current block
-func (dc *DrawContext) Neighbours() uint16 {
-	return dc.neighbours
-}
+func (dc *DrawContext) Neighbours() uint16 { _ = "STUB: not implemented"; return 0 }
 
 // Color returns the color which should be fill into the shape. Note that if you're not
 // using this color but your coded color.Color, some ImageOption functions those set foreground color
 // would take no effect.
 func (dc *DrawContext) Color() color.Color {
-	return dc.color
+	_ = "STUB: not implemented"
+
+	// rectangle IShape
+	return *new(color.Color)
 }
 
-// rectangle IShape
 type rectangle struct{}
 
 func (r rectangle) Draw(c *DrawContext) {
+	_ = "STUB: not implemented"
 	// FIXED(@yeqown): miss parameter of DrawRectangle
-	c.DrawRectangle(c.x, c.y, float64(c.w), float64(c.h))
-	c.SetColor(c.color)
-	c.Fill()
+	return
 }
 
 func (r rectangle) DrawFinder(ctx *DrawContext) {
-	r.Draw(ctx)
+	_ = "STUB: not implemented"
+
+	// circle IShape
+	return
 }
 
-// circle IShape
 type circle struct{}
 
 // Draw
 // FIXED: Draw could not draw circle
 func (r circle) Draw(c *DrawContext) {
+	_ = "STUB: not implemented"
 	// choose a proper radius values
-	radius := c.w / 2
-	r2 := c.h / 2
-	if r2 <= radius {
-		radius = r2
-	}
-
-	cx, cy := c.x+float64(c.w)/2.0, c.y+float64(c.h)/2.0 // get center point
-	c.DrawCircle(cx, cy, float64(radius))
-	c.SetColor(c.color)
-	c.Fill()
+	return
 }
 
-func (r circle) DrawFinder(ctx *DrawContext) {
-	r.Draw(ctx)
-}
+// get center point
+
+func (r circle) DrawFinder(ctx *DrawContext) { _ = "STUB: not implemented"; return }

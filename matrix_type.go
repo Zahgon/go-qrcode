@@ -22,41 +22,20 @@ const (
 	QRType_TIMING   qrtype = 8 << 1
 )
 
-func (s qrtype) String() string {
-	switch s {
-	case QRType_INIT:
-		return "I"
-	case QRType_DATA:
-		return "d"
-	case QRType_VERSION:
-		return "V"
-	case QRType_FORMAT:
-		return "f"
-	case QRType_FINDER:
-		return "F"
-	case QRType_DARK:
-		return "D"
-	case QRType_SPLITTER:
-		return "S"
-	case QRType_TIMING:
-		return "T"
-	}
-
-	return "?"
-}
+func (s qrtype) String() string { _ = "STUB: not implemented"; return "" }
 
 type QRValue = qrvalue
 
-func (v QRValue) Type() qrtype {
-	return v.qrtype()
-}
+func (v QRValue) Type() qrtype { _ = "STUB: not implemented"; return *new(qrtype) }
 
 func (v QRValue) IsSet() bool {
-	return v.qrbool()
+	_ = "STUB: not implemented"
+
+	// qrvalue represents the value of the matrix, it is composed of the qrtype(7bits) and the value(1bits).
+	// such as: 0b0000,0011 (QRValue_DATA_V1) represents the qrtype is QRType_DATA and the value is 1.
+	return false
 }
 
-// qrvalue represents the value of the matrix, it is composed of the qrtype(7bits) and the value(1bits).
-// such as: 0b0000,0011 (QRValue_DATA_V1) represents the qrtype is QRType_DATA and the value is 1.
 type qrvalue uint8
 
 var (
@@ -99,27 +78,10 @@ var (
 	QRValue_TIMING_V1 = qrvalue(QRType_TIMING | 1)
 )
 
-func (v qrvalue) qrtype() qrtype {
-	return qrtype(v & 0xfe)
-}
+func (v qrvalue) qrtype() qrtype { _ = "STUB: not implemented"; return *new(qrtype) }
 
-func (v qrvalue) qrbool() bool {
-	return v&0x01 == 1
-}
+func (v qrvalue) qrbool() bool { _ = "STUB: not implemented"; return false }
 
-func (v qrvalue) String() string {
-	t := v.qrtype()
-	if v.qrbool() {
-		return t.String() + "1"
-	}
+func (v qrvalue) String() string { _ = "STUB: not implemented"; return "" }
 
-	return t.String() + "0"
-}
-
-func (v qrvalue) xor(v2 qrvalue) qrvalue {
-	if v != v2 {
-		return QRValue_DATA_V1
-	}
-
-	return QRValue_DATA_V0
-}
+func (v qrvalue) xor(v2 qrvalue) qrvalue { _ = "STUB: not implemented"; return *new(qrvalue) }
